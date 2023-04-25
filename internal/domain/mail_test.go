@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"vn-lap-interviews/internal/entities"
-	"vn-lap-interviews/mocks"
+	"vn-lap-interview/internal/entities"
+	"vn-lap-interview/mocks"
 
 	"github.com/stretchr/testify/mock"
 )

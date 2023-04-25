@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"vn-lap-interviews/internal/entities"
-	"vn-lap-interviews/internal/repositories"
+	"vn-lap-interview/internal/entities"
+	"vn-lap-interview/internal/repositories"
 )
 
 type SendMailDomain interface {

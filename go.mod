@@ -1,4 +1,4 @@
-module vn-lap-interviews
+module vn-lap-interview
 
 go 1.20
 

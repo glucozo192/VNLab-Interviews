@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"vn-lap-interviews/internal/entities"
+	"vn-lap-interview/internal/entities"
 
 	"github.com/stretchr/testify/mock"
 )

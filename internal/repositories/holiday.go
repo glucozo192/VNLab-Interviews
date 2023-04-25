@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 	"time"
-	"vn-lap-interviews/pkg"
+	"vn-lap-interview/pkg"
 )
 
 type HolidayRepository interface {

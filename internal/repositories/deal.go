@@ -3,8 +3,8 @@ package repositories
 import (
 	"context"
 	"time"
-	"vn-lap-interviews/internal/entities"
-	"vn-lap-interviews/pkg"
+	"vn-lap-interview/internal/entities"
+	"vn-lap-interview/pkg"
 )
 
 type DealRepository interface {
