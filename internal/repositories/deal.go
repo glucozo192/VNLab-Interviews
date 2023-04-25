@@ -22,5 +22,25 @@ func NewDealRepository(db pkg.QueryExecer) DealRepository {
 }
 
 func (d *dealRepository) GetDeal(ctx context.Context, fromDate, toDate time.Time) ([]*entities.Deal, error) {
-	return []*entities.Deal{}, nil
+	query := `
+		SELECT id, name, due_date, created_at, updated_at
+		FROM deals
+		WHERE
+			due_date > $1 AND due_date < $2
+	`
+	deals := make([]*entities.Deal, 0)
+	rows, err := d.db.Query(ctx, query, fromDate, toDate)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		deal := new(entities.Deal)
+		err := rows.Scan(&deal.ID, &deal.Name, &deal.DueDate, &deal.CreatedAt, &deal.UpdatedAt)
+		if err != nil {
+			return []*entities.Deal{}, err
+		}
+		deals = append(deals, deal)
+	}
+	return deals, nil
 }

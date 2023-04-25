@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+
 	"vn-lap-interviews/internal/entities"
 	"vn-lap-interviews/internal/repositories"
 )
@@ -23,8 +24,6 @@ func NewSendMailDomain(
 ) SendMailDomain {
 	return &sendMailDomain{holidayRepo, dealRepo}
 }
-
-// todo: iSHoliday func should recieve multiple values
 
 func (s *sendMailDomain) SendMail(ctx context.Context) error {
 	currentDate := time.Now()
@@ -47,7 +46,7 @@ func (s *sendMailDomain) SendMail(ctx context.Context) error {
 
 	endDate, err := s.endDateSendMail(ctx, nextThreeDate)
 	if err != nil {
-		return fmt.Errorf("can't get end date: %v", err)
+		return fmt.Errorf("can't get end_date: %v", err)
 	}
 
 	deals, err := s.getDeal(ctx, nextThreeDate, endDate)
@@ -56,6 +55,7 @@ func (s *sendMailDomain) SendMail(ctx context.Context) error {
 	}
 
 	for deal := range deals {
+		// sendmail
 		fmt.Println("send mail: ", deal)
 	}
 
