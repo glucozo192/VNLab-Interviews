@@ -7,7 +7,7 @@ import (
 )
 
 type HolidayRepository interface {
-	IsHoliday(ctx context.Context, date time.Time) bool
+	IsHoliday(ctx context.Context, date time.Time) (bool, error)
 	GetEndDate(ctx context.Context, date time.Time) (time.Time, error)
 }
 
@@ -21,18 +21,18 @@ func NewHolidayRepository(db pkg.QueryExecer) HolidayRepository {
 	}
 }
 
-func (h *holidayRepository) IsHoliday(ctx context.Context, date time.Time) bool {
+func (h *holidayRepository) IsHoliday(ctx context.Context, date time.Time) (bool, error) {
 	query := `
         SELECT is_holiday
         FROM holidays
-        WHERE date = $1
+        WHERE date = ARRAY[$1]
     `
 	var isHoliday bool
-	err := h.db.QueryRow(ctx, query, date.Format(pkg.YYYYMMDD)).Scan(&isHoliday)
+	err := h.db.QueryRow(ctx, query, date).Scan(&isHoliday)
 	if err != nil {
-		return false
+		return false, err
 	}
-	return isHoliday
+	return isHoliday, nil
 }
 
 func (h *holidayRepository) GetEndDate(ctx context.Context, date time.Time) (time.Time, error) {

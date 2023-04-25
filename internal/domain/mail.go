@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"vn-lap-interviews/entities"
-	"vn-lap-interviews/repositories"
+	"vn-lap-interviews/internal/entities"
+	"vn-lap-interviews/internal/repositories"
 )
 
 type SendMailDomain interface {
-	SendMail(context.Context) string
+	SendMail(context.Context) error
 }
 
 type sendMailDomain struct {
@@ -17,41 +17,52 @@ type sendMailDomain struct {
 	dealRepo    repositories.DealRepository
 }
 
-func NewSendMailDomain() SendMailDomain {
-	return &sendMailDomain{}
+func NewSendMailDomain(
+	holidayRepo repositories.HolidayRepository,
+	dealRepo repositories.DealRepository,
+) SendMailDomain {
+	return &sendMailDomain{holidayRepo, dealRepo}
 }
 
 // todo: iSHoliday func should recieve multiple values
 
-func (s *sendMailDomain) SendMail(ctx context.Context) string {
+func (s *sendMailDomain) SendMail(ctx context.Context) error {
 	currentDate := time.Now()
-	if s.isHoliday(ctx, currentDate) {
-		return "skip holiday"
+	isHoliday, err := s.isHoliday(ctx, currentDate)
+	if err != nil {
+		return err
+	}
+	if isHoliday {
+		return nil
 	}
 
 	nextThreeDate := time.Now().Add(3 * 24 * time.Hour)
-	if s.isHoliday(ctx, nextThreeDate) {
-		return "skip holiday"
+	isHoliday, err = s.isHoliday(ctx, nextThreeDate)
+	if err != nil {
+		return err
+	}
+	if isHoliday {
+		return nil
 	}
 
 	endDate, err := s.endDateSendMail(ctx, nextThreeDate)
 	if err != nil {
-		return "can't get end date"
+		return fmt.Errorf("can't get end date: %v", err)
 	}
 
 	deals, err := s.getDeal(ctx, nextThreeDate, endDate)
 	if err != nil {
-		return "can't get deal"
+		return fmt.Errorf("can't get deal: %v", err)
 	}
 
 	for deal := range deals {
-		fmt.Println("sendmail: ", deal)
+		fmt.Println("send mail: ", deal)
 	}
 
-	return "success"
+	return nil
 }
 
-func (s *sendMailDomain) isHoliday(ctx context.Context, date ...time.Time) bool {
+func (s *sendMailDomain) isHoliday(ctx context.Context, date time.Time) (bool, error) {
 	return s.holidayRepo.IsHoliday(ctx, date)
 }
 

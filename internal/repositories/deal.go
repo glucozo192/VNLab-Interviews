@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 	"time"
-	"vn-lap-interviews/entities"
+	"vn-lap-interviews/internal/entities"
 	"vn-lap-interviews/pkg"
 )
 
